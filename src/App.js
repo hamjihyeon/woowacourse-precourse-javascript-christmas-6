@@ -7,7 +7,11 @@ class App {
     const day = await this.validDay();
     const menus = new Menu();
     const order = await this.getOrderSummary(menus);
-    Console.print(`12월 ${day} 우테코 식당에서 받을 이벤트 혜택 미리 보기!`);
+    Console.print(`12월 ${day} 우테코 식당에서 받을 이벤트 혜택 미리 보기!\n`);
+    Console.print('<주문 메뉴>');
+    Console.print(`${order}\n`);
+    // Console.print('<할인 전 총주문 금액>');
+    // Console.print()
   }
 
   async validDay() {
@@ -59,11 +63,12 @@ class App {
         return this.getOrderSummary(menu);
       }
 
-      uniqueMenus.add(menuItem.trim());
-      orderSummary += `${menuItem.trim()}-${quantity.trim()}, `;
+      orderSummary += `${menuItem.trim()} ${quantity.trim()}개\n`;
     }
 
-    orderSummary = orderSummary.slice(0, -2);
+    const totalOrderPrice = menu.getTotalPrice(orders);
+
+    orderSummary += `\n<할인 전 총주문 금액>\n${totalOrderPrice.toLocaleString()}원\n`;
 
     return orderSummary;
   }
