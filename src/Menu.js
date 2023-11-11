@@ -38,28 +38,49 @@ class Menu {
 
     getPrice(menuItem) {
         const menuItems = [
-          ...this.appetizers,
-          ...this.mainDishes,
-          ...this.desserts,
-          ...this.drinks,
+            ...this.appetizers,
+            ...this.mainDishes,
+            ...this.desserts,
+            ...this.drinks,
         ];
-    
+
         const selectedMenuItem = menuItems.find(item => item.name === menuItem);
-    
+
         return selectedMenuItem ? selectedMenuItem.price : 0;
-      }
-    
-      getTotalPrice(orderDetails) {
+    }
+
+    isDrinkItem(menuItemName) {
+        const drinkItems = [
+            '제로콜라',
+            '레드와인',
+            '샴페인',
+        ];
+
+        return drinkItems.includes(menuItemName);
+    }
+
+    getTotalPrice(orderDetails) {
         let totalPrice = 0;
-    
+        let hasNonDrinkItem = false;
+
         for (const orderDetail of orderDetails) {
-          const [menuItem, quantity] = orderDetail.split('-');
-          const price = this.getPrice(menuItem.trim());
-          totalPrice += price * parseInt(quantity.trim(), 10);
+            const [menuItem, quantity] = orderDetail.split('-');
+            const price = this.getPrice(menuItem.trim());
+
+            // 주문된 메뉴 중 음료가 아닌 메뉴가 하나라도 있는지 체크
+            if (price > 0) {
+                hasNonDrinkItem = true;
+            }
+
+            totalPrice += price * parseInt(quantity.trim(), 10);
         }
-    
+
+        // 주문된 메뉴 중 음료만 있다면 에러 출력
+        if (!hasNonDrinkItem) {
+            return -1;
+        }
         return totalPrice;
-      }
+    }
 }
 
 export default Menu;
