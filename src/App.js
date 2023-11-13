@@ -7,9 +7,6 @@ class App {
     this.day = await this.validDay();
     const menus = new Menu();
     const order = await this.getOrderSummary(menus);
-    // Console.print(`12월 ${this.day} 우테코 식당에서 받을 이벤트 혜택 미리 보기!\n`);
-    // Console.print('<주문 메뉴>');
-    // Console.print(`${order}\n`);
   }
 
   async validDay() {
@@ -147,7 +144,25 @@ class App {
     if (totalBenefitAmount <= 0) {
       Console.print(`${totalBenefitAmount.toLocaleString()}원`);
     } else {
-    Console.print(`-${totalBenefitAmount.toLocaleString()}원`);
+      Console.print(`-${totalBenefitAmount.toLocaleString()}원`);
+    }
+
+    Console.print('\n<총 주문 금액>');
+    const discountedTotalOrderPrice = totalOrderPrice - totalDiscount;
+
+    Console.print(`${discountedTotalOrderPrice.toLocaleString()}원`);
+
+    Console.print(`\n<할인 후 예상 결제 금액>\n-${totalBenefitAmount.toLocaleString()}원`);
+
+    Console.print('\n<12월 이벤트 배지>');
+    if (totalBenefitAmount >= 5000 && totalBenefitAmount < 10000) {
+      Console.print('별');
+    } else if (totalBenefitAmount >= 10000 && totalBenefitAmount < 20000) {
+      Console.print('트리');
+    } else if (totalBenefitAmount >= 20000) {
+      Console.print('산타');
+    } else {
+      Console.print('없음');
     }
 
     return orderSummary.trim();
@@ -157,12 +172,20 @@ class App {
     const today = new Date();
     const christmasDay = new Date(today.getFullYear(), 11, 25); // 11: 12월
     const daysUntilChristmas = Math.ceil((christmasDay - today) / (1000 * 60 * 60 * 24));
-    
-    // 26일부터는 할인 금액이 0
-    const discountAmount = (daysUntilChristmas >= 1 && daysUntilChristmas <= 25) ? (daysUntilChristmas * 100) - 3000 : 0;
-  
+    const discountAmount = (daysUntilChristmas * 100) - 3000;
+
     return discountAmount > 0 ? discountAmount : 0;
   }
+  // calculateChristmasDiscount() {
+  //   const today = new Date();
+  //   const christmasDay = new Date(today.getFullYear(), 11, 25); // 11: 12월
+  //   const daysUntilChristmas = Math.ceil((christmasDay - today) / (1000 * 60 * 60 * 24));
+
+  //   // 26일부터는 할인 금액이 0
+  //   const discountAmount = (daysUntilChristmas >= 1 && daysUntilChristmas <= 25) ? (daysUntilChristmas * 100) - 3000 : 0;
+
+  //   return discountAmount > 0 ? discountAmount : 0;
+  // }
 
   calculateWeekdayOrWeekendDiscount(isWeekend) {
     const discountPerMenu = 2023;
