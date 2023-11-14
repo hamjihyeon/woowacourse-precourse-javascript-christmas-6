@@ -1,21 +1,13 @@
 import { Console } from "@woowacourse/mission-utils";
+import InputView from "./InputView.js";
 import Menu from "./Menu.js";
 
 class App {
   async run() {
     Console.print('안녕하세요! 우테코 식당 12월 이벤트 플래너입니다.');
-    this.day = await this.validDay();
+    this.day = await InputView.readDate();
     const menus = new Menu();
     const order = await this.getOrderSummary(menus);
-  }
-
-  async validDay() {
-    const day = Number(await Console.readLineAsync('12월 중 식당 예상 방문 날짜는 언제인가요? (숫자만 입력해 주세요!)\n'));
-    if (day < 1 || day > 31 || isNaN(day)) {
-      Console.print('[ERROR] 유효하지 않은 날짜입니다. 다시 입력해 주세요');
-      return this.validDay();
-    }
-    return day;
   }
 
   async getOrderSummary(menu) {
@@ -38,31 +30,32 @@ class App {
     let orderSummary = '';
     let uniqueMenus = new Set();
     let totalOrderCount = 0;
+    const orderErrorMessage = '[ERROR] 유효하지 않은 주문입니다. 다시 입력해 주세요.';
 
     for (const order of orders) {
       const [menuItem, quantity] = order.split('-');
 
       // 메뉴 형식이 다른 경우 오류 출력
       if (!menuItem.trim() || !/^[a-zA-Z가-힣\s]+-\d+$/.test(order.trim())) {
-        Console.print('[ERROR] 유효하지 않은 주문 형식입니다. 다시 입력해 주세요.');
+        Console.print(orderErrorMessage);
         return this.getOrderSummary(menu);
       }
 
       // 메뉴가 메뉴판에 없는 경우 오류 출력
       if (!menu.isValidMenuItem(menuItem.trim())) {
-        Console.print('[ERROR] 유효하지 않은 주문 형식입니다. 다시 입력해 주세요.');
+        Console.print(orderErrorMessage);
         return this.getOrderSummary(menu);
       }
 
       // 중복 메뉴 입력 시 오류 출력
       if (uniqueMenus.has(menuItem.trim())) {
-        Console.print('[ERROR] 유효하지 않은 주문 형식입니다. 다시 입력해 주세요.');
+        Console.print(orderErrorMessage);
         return this.getOrderSummary(menu);
       }
 
       // 메뉴의 개수가 1 이상의 숫자가 아닌 경우 오류 출력
       if (!/^[1-9]\d*$/.test(quantity.trim())) {
-        Console.print('[ERROR] 유효하지 않은 주문 형식입니다. 다시 입력해 주세요.');
+        Console.print(orderErrorMessage);
         return this.getOrderSummary(menu);
       }
 
@@ -87,7 +80,7 @@ class App {
     // getTotalPrice 함수를 사용하여 주문 총액을 계산
     const totalOrderPrice = menu.getTotalPrice(orders);
 
-    let christmasDiscount = this.calculateChristmasDiscount();
+    let christmasDiscount = this.calculateChristmasDiscount(parseInt(this.day));
 
     // 주중 또는 주말 할인 계산
     let isWeekend = [5, 6].includes(new Date().getDay());
@@ -141,18 +134,21 @@ class App {
     }
 
     Console.print('\n<총혜택 금액>');
-    if (totalBenefitAmount <= 0) {
-      Console.print(`${totalBenefitAmount.toLocaleString()}원`);
-    } else {
+    if (`${totalBenefitAmount}` > 0) {
       Console.print(`-${totalBenefitAmount.toLocaleString()}원`);
+    } else {
+      weekdayOrWeekendDiscount = 0;
+      specialDiscount = 0;
+      christmasDiscount = 0;
+      totalBenefitAmount = 0;
+      Console.print(`${totalBenefitAmount.toLocaleString()}원`);
     }
 
-    Console.print('\n<총 주문 금액>');
+    Console.print('\n<할인 후 예상 결제 금액>');
     const discountedTotalOrderPrice = totalOrderPrice - totalDiscount;
+    // console.log(`-----------------------${totalOrderPrice}, ${totalDiscount}`);
 
     Console.print(`${discountedTotalOrderPrice.toLocaleString()}원`);
-
-    Console.print(`\n<할인 후 예상 결제 금액>\n-${totalBenefitAmount.toLocaleString()}원`);
 
     Console.print('\n<12월 이벤트 배지>');
     if (totalBenefitAmount >= 5000 && totalBenefitAmount < 10000) {
@@ -168,25 +164,22 @@ class App {
     return orderSummary.trim();
   }
 
-  calculateChristmasDiscount() {
+  calculateChristmasDiscount(selectedDay) {
     const today = new Date();
     const christmasDay = new Date(today.getFullYear(), 11, 25); // 11: 12월
     const daysUntilChristmas = Math.ceil((christmasDay - today) / (1000 * 60 * 60 * 24));
-    const discountAmount = (daysUntilChristmas * 100) - 3000;
-
-    return discountAmount > 0 ? discountAmount : 0;
+  
+    // selectedDay가 크리스마스 이후인 경우 할인을 적용하지 않음
+    if (selectedDay > daysUntilChristmas) {
+      return 0;
+    }
+  
+    // 할인 시작일부터 할인 금액을 계산
+    const discountAmount = (selectedDay * 100) - 1000;
+  
+    // 최대 할인 금액은 3400원으로 제한
+    return discountAmount <= 3400 ? discountAmount : 3400;
   }
-  // calculateChristmasDiscount() {
-  //   const today = new Date();
-  //   const christmasDay = new Date(today.getFullYear(), 11, 25); // 11: 12월
-  //   const daysUntilChristmas = Math.ceil((christmasDay - today) / (1000 * 60 * 60 * 24));
-
-  //   // 26일부터는 할인 금액이 0
-  //   const discountAmount = (daysUntilChristmas >= 1 && daysUntilChristmas <= 25) ? (daysUntilChristmas * 100) - 3000 : 0;
-
-  //   return discountAmount > 0 ? discountAmount : 0;
-  // }
-
   calculateWeekdayOrWeekendDiscount(isWeekend) {
     const discountPerMenu = 2023;
 
