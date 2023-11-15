@@ -24,8 +24,7 @@ const OutputView = {
         Console.print('\n<증정 메뉴>');
         Console.print(bonusMenu);
     },
-    printBenifitAmount(price, day) {
-        const calculate = new Calculate();
+    printBenifitAmount(price, day, calculate) {
         let christmasDiscount = calculate.calculateChristmasDiscount(parseInt(day));
 
         // 주중 또는 주말 할인 계산
@@ -60,6 +59,8 @@ const OutputView = {
             }
         } else {
             Console.print("없음");
+            christmasDiscount = 0;
+            weekdayOrWeekendDiscount = 0;
             totalBenefitAmount = 0;
         }
         return totalBenefitAmount;
@@ -76,6 +77,14 @@ const OutputView = {
             this.totalDiscount = 0;
             Console.print(`${benefitAmount.toLocaleString()}원`);
         }
+    },
+    printDiscountOrderPrice(price, calculate, day) {
+        let isWeekend = [5, 6].includes(new Date().getDay());
+        let weekdayOrWeekendDiscount = calculate.calculateWeekdayOrWeekendDiscount(isWeekend);
+        Console.print('\n<할인 후 예상 결제 금액>');
+        const discountedTotalOrderPrice = price - calculate.calculateChristmasDiscount(parseInt(day)) - calculate.calculateSpecialDiscount() - weekdayOrWeekendDiscount;
+
+        Console.print(`${discountedTotalOrderPrice.toLocaleString()}원`);
     }
 }
 
