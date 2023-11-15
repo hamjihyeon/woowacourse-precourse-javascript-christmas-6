@@ -1,4 +1,6 @@
 import { Console } from '@woowacourse/mission-utils';
+import Calculate from './Calculate.js'
+import App from './App.js';
 
 const OutputView = {
     printMenu(orders) {
@@ -21,6 +23,45 @@ const OutputView = {
         let bonusMenu = price >= 120000 ? '샴페인 1개' : '없음';
         Console.print('\n<증정 메뉴>');
         Console.print(bonusMenu);
+    },
+    printBenifitAmount(price, day) {
+        const calculate = new Calculate();
+        let christmasDiscount = calculate.calculateChristmasDiscount(parseInt(day));
+
+        // 주중 또는 주말 할인 계산
+        let isWeekend = [5, 6].includes(new Date().getDay());
+        let weekdayOrWeekendDiscount = calculate.calculateWeekdayOrWeekendDiscount(isWeekend);
+        // 특별 할인 계산
+        let specialDiscount = calculate.calculateSpecialDiscount();
+
+        // 총 할인 계산
+        let totalDiscount = christmasDiscount + weekdayOrWeekendDiscount + specialDiscount;
+
+        // 총 혜택 계산
+        let totalBenefitAmount = christmasDiscount + weekdayOrWeekendDiscount + specialDiscount + (price >= 120000 ? 25000 : 0);
+
+        Console.print('\n<혜택 내역>');
+        if (price >= 10000) {
+
+            if (christmasDiscount !== 0) {
+                Console.print(`크리스마스 디데이 할인: -${christmasDiscount.toLocaleString()}원`);
+            }
+
+            if (weekdayOrWeekendDiscount !== 0) {
+                Console.print(`평일/주말 할인: -${weekdayOrWeekendDiscount.toLocaleString()}원`);
+            }
+
+            if (specialDiscount !== 0) {
+                Console.print('특별 할인: -1,000원');
+            }
+
+            if (price >= 120000) {
+                Console.print('증정 이벤트: -25,000원');
+            }
+        } else {
+            Console.print("없음");
+            totalBenefitAmount = 0;
+        }
     }
 }
 
