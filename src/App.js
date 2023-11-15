@@ -18,6 +18,7 @@ class App {
     const benefitAmount = OutputView.printBenifitAmount(price, this.day, calculate);
     OutputView.printTotalBenefitAmount(benefitAmount);
     OutputView.printDiscountOrderPrice(price, calculate, this.day);
+    OutputView.printEvent(benefitAmount);
   }
 
   async getOrderSummary(menu) {

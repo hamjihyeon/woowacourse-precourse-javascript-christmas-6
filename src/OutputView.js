@@ -85,6 +85,18 @@ const OutputView = {
         const discountedTotalOrderPrice = price - calculate.calculateChristmasDiscount(parseInt(day)) - calculate.calculateSpecialDiscount() - weekdayOrWeekendDiscount;
 
         Console.print(`${discountedTotalOrderPrice.toLocaleString()}원`);
+    },
+    printEvent(benefitAmount) {
+        Console.print('\n<12월 이벤트 배지>');
+        if (benefitAmount >= 5000 && benefitAmount < 10000) {
+            Console.print('별');
+        } else if (benefitAmount >= 10000 && benefitAmount < 20000) {
+            Console.print('트리');
+        } else if (benefitAmount >= 20000) {
+            Console.print('산타');
+        } else {
+            Console.print('없음');
+        }
     }
 }
 
