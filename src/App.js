@@ -11,7 +11,8 @@ class App {
     const order = await InputView.readMenu(menus);
     Console.print(`12월 ${this.day} 우테코 식당에서 받을 이벤트 혜택 미리 보기!\n`);
     OutputView.printMenu(order);
-    OutputView.printTotalOrderPrice(menus, order);
+    const price = OutputView.printTotalOrderPrice(menus, order);
+    OutputView.printBonusMenu(price);
   }
 
   async getOrderSummary(menu) {
@@ -25,8 +26,8 @@ class App {
     // 특별 할인 계산
     let specialDiscount = this.calculateSpecialDiscount();
 
-    // 특별 할인 계산
-    let bonusMenu = totalOrderPrice >= 120000 ? '샴페인 1개' : '없음';
+    // // 특별 할인 계산
+    // let bonusMenu = totalOrderPrice >= 120000 ? '샴페인 1개' : '없음';
 
     // 총 할인 계산
     let totalDiscount = christmasDiscount + weekdayOrWeekendDiscount + specialDiscount;
@@ -34,10 +35,8 @@ class App {
     // 총 혜택 계산
     let totalBenefitAmount = christmasDiscount + weekdayOrWeekendDiscount + specialDiscount + (totalOrderPrice >= 120000 ? 25000 : 0);
 
-    Console.print(`12월 ${this.day} 우테코 식당에서 받을 이벤트 혜택 미리 보기!\n`);
-
-    Console.print('\n<증정 메뉴>');
-    Console.print(bonusMenu);
+    // Console.print('\n<증정 메뉴>');
+    // Console.print(bonusMenu);
 
     Console.print('\n<혜택 내역>');
     if (totalOrderPrice >= 10000) {
