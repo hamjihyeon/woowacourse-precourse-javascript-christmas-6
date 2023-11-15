@@ -81,16 +81,13 @@ class App {
     const totalOrderPrice = menu.getTotalPrice(orders);
 
     let christmasDiscount = this.calculateChristmasDiscount(parseInt(this.day));
-    console.log(`${christmasDiscount}`);
 
     // 주중 또는 주말 할인 계산
     let isWeekend = [5, 6].includes(new Date().getDay());
     let weekdayOrWeekendDiscount = this.calculateWeekdayOrWeekendDiscount(isWeekend);
-    console.log(`${weekdayOrWeekendDiscount}`);
 
     // 특별 할인 계산
     let specialDiscount = this.calculateSpecialDiscount();
-    console.log(`${specialDiscount}`);
 
     // 특별 할인 계산
     let bonusMenu = totalOrderPrice >= 120000 ? '샴페인 1개' : '없음';
@@ -100,7 +97,6 @@ class App {
 
     // 총 혜택 계산
     let totalBenefitAmount = christmasDiscount + weekdayOrWeekendDiscount + specialDiscount + (totalOrderPrice >= 120000 ? 25000 : 0);
-    console.log(`${totalBenefitAmount}`);
 
     Console.print(`12월 ${this.day} 우테코 식당에서 받을 이벤트 혜택 미리 보기!\n`);
 
