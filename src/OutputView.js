@@ -62,6 +62,20 @@ const OutputView = {
             Console.print("없음");
             totalBenefitAmount = 0;
         }
+        return totalBenefitAmount;
+    },
+    printTotalBenefitAmount(benefitAmount) {
+        Console.print('\n<총혜택 금액>');
+        if (`${benefitAmount}` > 0) {
+            Console.print(`-${benefitAmount.toLocaleString()}원`);
+        } else {
+            this.weekdayOrWeekendDiscount = 0;
+            this.specialDiscount = 0;
+            this.christmasDiscount = 0;
+            this.totalBenefitAmount = 0;
+            this.totalDiscount = 0;
+            Console.print(`${benefitAmount.toLocaleString()}원`);
+        }
     }
 }
 

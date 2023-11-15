@@ -13,66 +13,11 @@ class App {
     OutputView.printMenu(order);
     const price = OutputView.printTotalOrderPrice(menus, order);
     OutputView.printBonusMenu(price);
-    OutputView.printBenifitAmount(price, this.day);
+    const benefitAmount = OutputView.printBenifitAmount(price, this.day);
+    OutputView.printTotalBenefitAmount(benefitAmount);
   }
 
   async getOrderSummary(menu) {
-
-    // let christmasDiscount = this.calculateChristmasDiscount(parseInt(this.day));
-
-    // // 주중 또는 주말 할인 계산
-    // let isWeekend = [5, 6].includes(new Date().getDay());
-    // let weekdayOrWeekendDiscount = this.calculateWeekdayOrWeekendDiscount(isWeekend);
-
-    // // 특별 할인 계산
-    // let specialDiscount = this.calculateSpecialDiscount();
-
-    // // // 특별 할인 계산
-    // // let bonusMenu = totalOrderPrice >= 120000 ? '샴페인 1개' : '없음';
-
-    // // 총 할인 계산
-    // let totalDiscount = christmasDiscount + weekdayOrWeekendDiscount + specialDiscount;
-
-    // // 총 혜택 계산
-    // let totalBenefitAmount = christmasDiscount + weekdayOrWeekendDiscount + specialDiscount + (totalOrderPrice >= 120000 ? 25000 : 0);
-
-    // Console.print('\n<증정 메뉴>');
-    // Console.print(bonusMenu);
-
-    // Console.print('\n<혜택 내역>');
-    // if (totalOrderPrice >= 10000) {
-
-    //   if (christmasDiscount !== 0) {
-    //     Console.print(`크리스마스 디데이 할인: -${christmasDiscount.toLocaleString()}원`);
-    //   }
-
-    //   if (weekdayOrWeekendDiscount !== 0) {
-    //     Console.print(`평일/주말 할인: -${weekdayOrWeekendDiscount.toLocaleString()}원`);
-    //   }
-
-    //   if (specialDiscount !== 0) {
-    //     Console.print('특별 할인: -1,000원');
-    //   }
-
-    //   if (totalOrderPrice >= 120000) {
-    //     Console.print('증정 이벤트: -25,000원');
-    //   }
-    // } else {
-    //   Console.print("없음");
-    //   totalBenefitAmount = 0;
-    // }
-
-    Console.print('\n<총혜택 금액>');
-    if (`${totalBenefitAmount}` > 0) {
-      Console.print(`-${totalBenefitAmount.toLocaleString()}원`);
-    } else {
-      weekdayOrWeekendDiscount = 0;
-      specialDiscount = 0;
-      christmasDiscount = 0;
-      totalBenefitAmount = 0;
-      totalDiscount = 0;
-      Console.print(`${totalBenefitAmount.toLocaleString()}원`);
-    }
 
     Console.print('\n<할인 후 예상 결제 금액>');
     const discountedTotalOrderPrice = totalOrderPrice - totalDiscount;
